@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#4A90E2">
+    <title>Smart Request Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Home Page -->
+    <div id="homePage" class="page active">
+        <nav class="navbar">
+            <div class="logo">📋 Smart Request Manager</div>
+            <div class="nav-links">
+                <a onclick="scrollToSection('features')">Features</a>
+                <a onclick="showPage('trackPage')">Track Request</a>
+                <button onclick="toggleDarkMode()" class="btn-theme">🌙</button>
+                <button onclick="showPage('loginPage')" class="btn-login">Login</button>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <h1>Manage Requests Quickly & Smart</h1>
+            <p>AI-powered request management system with real-time tracking</p>
+            <button onclick="showPage('loginPage')" class="btn-primary">Submit a Request</button>
+        </section>
+
+        <section id="features" class="features">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon">⚡</div>
+                    <h3>Fast Request Submission</h3>
+                    <p>Submit requests in seconds</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🤖</div>
+                    <h3>AI Auto-Categorization</h3>
+                    <p>Automatic category detection</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h3>Real-time Tracking</h3>
+                    <p>Track status anytime</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">👥</div>
+                    <h3>User Dashboard</h3>
+                    <p>Personalized dashboard</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Contact | About | Terms</p>
+            <p>&copy; 2025 Smart Request Manager</p>
+        </footer>
+    </div>
+
+    <!-- Login/Register Page -->
+    <div id="loginPage" class="page">
+        <div class="login-container">
+            <div class="login-box">
+                <h2>Smart Request Manager</h2>
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                    <button class="tab-btn" onclick="switchTab('register')">Create Account</button>
+                </div>
+
+                <form id="loginForm" class="auth-form active">
+                    <input type="text" id="loginUsername" placeholder="Username" required>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+
+                <form id="registerForm" class="auth-form">
+                    <input type="text" id="regUsername" placeholder="Username" required>
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                    <input type="password" id="regPassword" placeholder="Password" required>
+                    <select id="regRole" required>
+                        <option value="">Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                    <button type="submit" class="btn-primary">Create Account</button>
+                </form>
+
+                <button onclick="showPage('homePage')" class="btn-back">← Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Track Request Page -->
+    <div id="trackPage" class="page">
+        <nav class="navbar">
+            <div class="logo">📋 Track Request</div>
+            <div class="nav-links">
+                <button onclick="toggleDarkMode()" class="btn-theme">🌙</button>
+                <button onclick="showPage('homePage')" class="btn-logout">← Back</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="track-container">
+                <h2>Track Your Request</h2>
+                <form id="trackForm">
+                    <input type="number" id="trackId" placeholder="Enter Request ID" required>
+                    <button type="submit" class="btn-primary">Track</button>
+                </form>
+
+                <div id="trackResult" class="track-result hidden">
+                    <div class="result-card">
+                        <h3>Request Details</h3>
+                        <p><strong>Request ID:</strong> <span id="resultId"></span></p>
+                        <p><strong>Title:</strong> <span id="resultTitle"></span></p>
+                        <p><strong>Category:</strong> <span id="resultCategory"></span></p>
+                        <p><strong>Status:</strong> <span id="resultStatus"></span></p>
+                        <p><strong>Date:</strong> <span id="resultDate"></span></p>
+                        <p><strong>Notes:</strong> <span id="resultNotes"></span></p>
+                    </div>
+                </div>
+
+                <div id="trackError" class="track-error hidden">
+                    <p>❌ Request not found. Please check your ID.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminPage" class="page">
+        <nav class="navbar">
+            <div class="logo">📋 Admin Dashboard</div>
+            <div class="nav-links">
+                <a onclick="showAdminSection('dashboard')">Dashboard</a>
+                <a onclick="showAdminSection('analytics')">Analytics</a>
+                <a onclick="openEmailSetup()">⚙️ Email Setup</a>
+                <button onclick="openNotifications()" class="btn-notification">🔔 <span id="adminNotifCount" class="notif-badge hidden">0</span></button>
+                <button onclick="openProfile()" class="btn-profile">👤</button>
+                <button onclick="toggleDarkMode()" class="btn-theme">🌙</button>
+                <button onclick="logout()" class="btn-logout">Logout</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div id="adminDashboard" class="admin-section active">
+                <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+                    <button onclick="openBroadcastEmail()" class="btn-primary" style="width:auto;">📧 Send Email to All Users</button>
+                    <button onclick="exportToCSV()" class="btn-primary" style="width:auto;background:#27ae60;">📄 Export to Excel</button>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="totalReqs">0</h3>
+                        <p>Total Requests</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="pendingReqs">0</h3>
+                        <p>Pending</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="inProgressReqs">0</h3>
+                        <p>In Progress</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="completedReqs">0</h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <input type="text" id="adminSearch" placeholder="Search requests...">
+                    <select id="adminCategoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="Bug">Bug</option>
+                        <option value="Feature">Feature</option>
+                        <option value="Support">Support</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <select id="adminStatusFilter">
+                        <option value="">All Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+
+                <table class="requests-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                            <th>Assigned To</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTable"></tbody>
+                </table>
+            </div>
+
+            <div id="adminAnalytics" class="admin-section">
+                <h2>Analytics</h2>
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Categorization Chart</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Status Overview</h3>
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Priority Distribution</h3>
+                        <canvas id="priorityChart"></canvas>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Requests Trend</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="userPage" class="page">
+        <nav class="navbar">
+            <div class="logo">📋 User Dashboard</div>
+            <div class="nav-links">
+                <a onclick="showUserSection('submit')">Submit Request</a>
+                <a onclick="showUserSection('myRequests')">My Requests</a>
+                <button onclick="openNotifications()" class="btn-notification">🔔 <span id="userNotifCount" class="notif-badge hidden">0</span></button>
+                <button onclick="openProfile()" class="btn-profile">👤</button>
+                <button onclick="toggleDarkMode()" class="btn-theme">🌙</button>
+                <button onclick="logout()" class="btn-logout">Logout</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div id="userSubmit" class="user-section active">
+                <div class="form-container">
+                    <h2>Submit a Request</h2>
+                    <form id="requestForm">
+                        <input type="text" id="reqTitle" placeholder="Request Title" required>
+                        <textarea id="reqDescription" placeholder="Description" required></textarea>
+                        <select id="reqDepartment">
+                            <option value="">Department (Optional)</option>
+                            <option value="IT">IT</option>
+                            <option value="HR">HR</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Operations">Operations</option>
+                        </select>
+                        <select id="reqPriority" required>
+                            <option value="">Select Priority</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                        <input type="date" id="reqDueDate" placeholder="Due Date (Optional)">
+                        <button type="submit" class="btn-primary">Submit Request</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="userMyRequests" class="user-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="userTotal">0</h3>
+                        <p>My Requests</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="userPending">0</h3>
+                        <p>Pending</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="userCompleted">0</h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <input type="text" id="userSearch" placeholder="Search...">
+                    <select id="userStatusFilter">
+                        <option value="">All Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+
+                <table class="requests-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                            <th>Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Modal -->
+    <div id="statusModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Update Request Status</h3>
+            <select id="newStatus">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+            <textarea id="statusNote" placeholder="Add note"></textarea>
+            <div class="modal-buttons">
+                <button onclick="updateStatus()" class="btn-primary">Update</button>
+                <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Broadcast Email Modal -->
+    <div id="broadcastModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Send Email to All Users</h3>
+            <input type="text" id="broadcastSubject" placeholder="Email Subject" style="width:100%;padding:12px;margin-bottom:15px;border:1px solid #ddd;border-radius:6px;">
+            <textarea id="broadcastMessage" placeholder="Email Message" style="width:100%;padding:12px;margin-bottom:15px;border:1px solid #ddd;border-radius:6px;min-height:150px;"></textarea>
+            <div class="modal-buttons">
+                <button onclick="sendBroadcastEmail()" class="btn-primary">Send to All</button>
+                <button onclick="closeBroadcast()" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Setup Modal -->
+    <div id="emailSetupModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Email Notification Setup</h3>
+            <p>Configure EmailJS to send notifications:</p>
+            <input type="text" id="emailServiceId" placeholder="EmailJS Service ID">
+            <input type="text" id="emailTemplateId" placeholder="EmailJS Template ID">
+            <input type="text" id="emailPublicKey" placeholder="EmailJS Public Key">
+            <div class="modal-buttons">
+                <button onclick="saveEmailConfig()" class="btn-primary">Save</button>
+                <button onclick="closeEmailSetup()" class="btn-secondary">Cancel</button>
+            </div>
+            <p style="font-size:12px;margin-top:15px;">Get free keys at <a href="https://www.emailjs.com" target="_blank">emailjs.com</a></p>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div id="notificationsModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Notifications</h3>
+            <div id="notificationsList" style="max-height:400px;overflow-y:auto;"></div>
+            <div class="modal-buttons">
+                <button onclick="closeNotifications()" class="btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>My Profile</h3>
+            <form id="profileForm">
+                <input type="text" id="profileUsername" placeholder="Username" readonly style="background:#f0f0f0;">
+                <input type="email" id="profileEmail" placeholder="Email" required>
+                <input type="password" id="profileNewPassword" placeholder="New Password (leave blank to keep current)">
+                <button type="submit" class="btn-primary">Update Profile</button>
+            </form>
+            <div class="modal-buttons">
+                <button onclick="closeProfile()" class="btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Modal -->
+    <div id="commentsModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Request Comments</h3>
+            <div id="commentsList" style="max-height:300px;overflow-y:auto;margin-bottom:15px;"></div>
+            <textarea id="newComment" placeholder="Add a comment..." style="width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;margin-bottom:15px;"></textarea>
+            <div class="modal-buttons">
+                <button onclick="addComment()" class="btn-primary">Add Comment</button>
+                <button onclick="closeComments()" class="btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
