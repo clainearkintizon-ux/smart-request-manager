@@ -1,13 +1,19 @@
-# OS files
-.DS_Store
-Thumbs.db
+# Navigate to your repository
+cd your-repo-name
 
-# Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Move HTML files from html folder to root
+mv html/* ./
 
-# Logs
-*.log
+# If you have index.html in the html folder:
+mv html/index.html ./
+
+# Remove the now-empty html folder
+rmdir html
+
+# Or if folder isn't empty:
+rm -rf html
+
+# Commit and push
+git add .
+git commit -m "Move HTML files to root"
+git push
